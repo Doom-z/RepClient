@@ -9,6 +9,7 @@ import (
 	"strconv"
 
 	"github.com/Doom-z/RepClient/client/model"
+	"github.com/Doom-z/RepClient/pkg/logger"
 )
 
 type Client struct {
@@ -28,7 +29,7 @@ func WithPageSize(size int) Option {
 
 func WithApiKey(apiKey string) Option {
 	return func(c *Client) {
-		c.apiURL.Query().Set("api_key", apiKey)
+		c.apiKey = apiKey
 	}
 }
 
@@ -216,6 +217,7 @@ func FetchDNSRecords[T any](c *Client, recordType string, ip string) (<-chan T, 
 				recordsCh <- record
 			}
 			if !result.Pagination.HasMore {
+				logger.Infof("masuk$")
 				break
 			}
 			pageToken = result.Pagination.NextPageToken

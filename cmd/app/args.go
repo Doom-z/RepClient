@@ -6,10 +6,10 @@ type Args struct {
 	Ns               string `arg:"-s,--ns" help:"ns to query"`
 	Cname            string `arg:"-n,--cname" help:"cname to query"`
 	Txt              string `arg:"-t,--txt" help:"txt to query"`
-	Mx               string `arg:"-m,--mx" help:"mx to query"`
+	Mx               string `arg:"-x,--mx" help:"mx to query"`
 	ListFile         string `arg:"-l,--list-file" help:"Path to file containing list of DNS entries (ipv4, ipv6, ns, cname, txt, mx); type will be auto-detected"`
 	ModeFull         bool   `arg:"-f,--full" help:"full mode" default:"false"`
-	MaxTotalOutputIp int    `arg:"-m,--max-total-output-ip" help:"max total output per ip" default:"100"`
+	MaxTotalOutputIp int    `arg:"-m,--max" help:"max total output per ip" default:"100"`
 	PageSize         int    `arg:"-p,--page-size" help:"page size" default:"100"`
 	Output           bool   `arg:"-o,--output" help:"output to file" default:"false"`
 	Threads          int    `arg:"-t,--threads" help:"number of threads" default:"1"`
