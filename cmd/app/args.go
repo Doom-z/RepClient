@@ -11,7 +11,7 @@ type Args struct {
 	ModeFull         bool   `arg:"-f,--full" help:"full mode" default:"false"`
 	MaxTotalOutputIp int    `arg:"-m,--max-total-output-ip" help:"max total output per ip" default:"100"`
 	PageSize         int    `arg:"-p,--page-size" help:"page size" default:"100"`
-	Output           string `arg:"--output" help:"output format" default:"json"`
+	Output           bool   `arg:"-o,--output" help:"output to file" default:"false"`
 	Threads          int    `arg:"-t,--threads" help:"number of threads" default:"1"`
 	Verbose          bool   `arg:"-v,--verbose" help:"verbose output" default:"false"`
 	Config           string `arg:"-c,--config" help:"config file" default:"config.toml"`

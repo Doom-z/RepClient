@@ -4,6 +4,7 @@ import (
 	"github.com/Doom-z/RepClient/cmd/app"
 	"github.com/Doom-z/RepClient/cmd/app/cfg"
 	"github.com/Doom-z/RepClient/cmd/app/log"
+	"github.com/Doom-z/RepClient/pkg/logger"
 	"github.com/alexflint/go-arg"
 )
 
@@ -14,7 +15,12 @@ func main() {
 	args = LoadArgsValid()
 	conf = cfg.LoadConfValid(args.Config, defaultConf, "config.toml")
 	log.InitLogger(conf.Log, args.Verbose)
-	app.Run(args, conf)
+	run, err := app.NewRun(args, conf)
+	if err != nil {
+		logger.Fatal(err)
+	}
+	// app.Run(args, conf)
+	run.Start()
 }
 
 func LoadArgsValid() app.Args {

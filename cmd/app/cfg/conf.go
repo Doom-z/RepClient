@@ -5,9 +5,15 @@ import "github.com/sirupsen/logrus"
 const Name = "repclient"
 
 type Conf struct {
-	App App `toml:"app"`
-	Api Api `toml:"api"`
-	Log Log `toml:"log"`
+	App    App    `toml:"app"`
+	Api    Api    `toml:"api"`
+	Output Output `toml:"output"`
+	Log    Log    `toml:"log"`
+}
+
+type Output struct {
+	Format string `toml:"format"`
+	Dir    string `toml:"dir"`
 }
 
 type App struct {
@@ -64,6 +70,8 @@ func GetDefaultConf() Conf {
 // levelToLogrusLevel converts a string to a logrus.Level
 func LevelToLogrusLevel(level string) logrus.Level {
 	switch level {
+	case "trace":
+		return logrus.TraceLevel
 	case "debug":
 		return logrus.DebugLevel
 	case "info":
