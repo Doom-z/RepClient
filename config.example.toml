@@ -1,0 +1,20 @@
+[app]
+name = "RepClient"
+description = "Official cli client of repproject"
+
+[api]
+host = "http://localhost:8081"
+api_key = ""
+
+[log]
+level = "debug"
+
+[[log.stdout]]
+format = "text"
+output = "stdout"
+
+[[log.file]]
+format = "json"
+path = "log/app.log"
+max_size = 10     # in MB, depends on how you implement log rotation
+max_age = 7       # in days%
