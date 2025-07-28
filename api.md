@@ -1,8 +1,8 @@
-
-
 # 📘 RepProject API – DNS Endpoints
 
-Base URL: `/api/dns`
+Base URL: `https://repproject.world`
+
+Free Token: `@repproject`
 
 All endpoints require **Bearer token authentication** using the `Authorization` header unless stated otherwise.
 
@@ -12,7 +12,7 @@ Authorization: Bearer <token>
 
 ---
 
-## 🔍 GET `/api/dns`
+## 🔍 GET `/api/dns` ( free, limited results upto 1k )
 
 Query DNS records (A, AAAA, NS, MX, TXT, CNAME) using a single parameter.
 
@@ -38,16 +38,26 @@ GET /api/dns?ip=1.1.1.1
 ### Success Response
 
 ```json
-{
-  "type": "A",
-  "records": ["one.one.one.one"]
-}
+[
+  {
+    "ip": "192.168.1.1",
+    "domain_id": "abc123.co,",
+    "record_type": "A",
+    "timestamp": 1724457600
+  },
+  {
+    "ip": "2606:4700:4700::1111",
+    "domain_id": "def456.com",
+    "record_type": "AAAA",
+    "timestamp": 1724458600
+  }
+]
 ```
 
 ### Errors
 
-* `400 Bad Request` – If no valid query param is provided.
-* `404 Not Found` – DNS record not found.
+- `400 Bad Request` – If no valid query param is provided.
+- `404 Not Found` – DNS record not found.
 
 ---
 
@@ -67,7 +77,7 @@ Same as `/api/dns`, plus:
 ### Example Request
 
 ```
-GET /api/dns/paging?ip=1.1.1.1&page_size=50
+GET /api/dns/paging?ip=8.8.8.8&page_size=50
 ```
 
 ### Success Response
@@ -75,12 +85,23 @@ GET /api/dns/paging?ip=1.1.1.1&page_size=50
 ```json
 {
   "data": [
-    { "domain": "example.com", "type": "A", "value": "1.1.1.1" }
+    {
+      "ip": "8.8.8.8",
+      "domain_id": "example123.com",
+      "record_type": "A",
+      "timestamp": 1724457600
+    },
+    {
+      "ip": "8.8.8.8",
+      "domain_id": "another.com",
+      "record_type": "A",
+      "timestamp": 1724457700
+    }
   ],
   "pagination": {
     "page_size": 50,
     "has_more": true,
-    "next_page_token": "eyJvZmZzZXQiOjUwfQ=="
+    "next_page_token": "eyJvZmZzZXQiOjUwfQ..."
   }
 }
 ```
@@ -110,19 +131,30 @@ GET /api/dns/a?ipv4=1.1.1.1&page_size=25
 ```json
 {
   "data": [
-    { "domain": "cloudflare-dns.com", "type": "A", "ip": "1.1.1.1" }
+    {
+      "domain_id": "cloudflare-dns.com",
+      "ip": "1.1.1.1",
+      "asn": 13335,
+      "asn_name": "CLOUDFLARENET",
+      "country": "US",
+      "city": "San Francisco",
+      "latlong": "37.7749,-122.4194",
+      "timestamp": 1724457600
+    }
+    ...
   ],
   "pagination": {
     "page_size": 25,
     "has_more": false
   }
 }
+
 ```
 
 ### Errors
 
-* `401 Unauthorized` – Free users cannot access this endpoint.
-* `404 Not Found`
+- `401 Unauthorized` – Free users cannot access this endpoint.
+- `404 Not Found`
 
 ---
 
@@ -149,18 +181,29 @@ GET /api/dns/aaaa?ipv6=2606:4700:4700::1111&page_size=25
 ```json
 {
   "data": [
-    { "domain": "cloudflare-dns.com", "type": "AAAA", "ip": "2606:4700:4700::1111" }
+    {
+      "domain_id": "cloudflare-dns.com",
+      "ip": "2606:4700:4700::1111",
+      "asn": 13335,
+      "asn_name": "CLOUDFLARENET",
+      "country": "US",
+      "city": "San Francisco",
+      "latlong": "37.7749,-122.4194",
+      "timestamp": 1724457600
+    }
+    ...
   ],
   "pagination": {
     "page_size": 25,
     "has_more": false
   }
 }
+
 ```
 
 ### Errors
 
-* `401 Unauthorized` – Free users cannot access this endpoint.
-* `404 Not Found`
+- `401 Unauthorized` – Free users cannot access this endpoint.
+- `404 Not Found`
 
 ---
