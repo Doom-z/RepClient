@@ -17,9 +17,15 @@ jobs:
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
         run: |
           if [[ "${{ github.event_name }}" == "push" ]]; then
-            TEXT="🚀 New commit to *${{ github.repository }}*\n\n*Message:* ${{ github.event.head_commit.message }}\n\n[View Commit](https://github.com/${{ github.repository }}/commit/${{ github.sha }})"
+            TEXT="🚀 New commit to *${{ github.repository }}*
+            
+            *Message:* ${{ github.event.head_commit.message }}
+            
+            [View Commit](https://github.com/${{ github.repository }}/commit/${{ github.sha }})"
           elif [[ "${{ github.event_name }}" == "release" ]]; then
-            TEXT="🎉 New *release* published: *${{ github.event.release.name }}*\n\n[View Release](${{ github.event.release.html_url }})"
+            TEXT="🎉 New *release* published: *${{ github.event.release.name }}*
+            
+            [View Release](${{ github.event.release.html_url }})"
           fi
 
           curl -s -X POST "https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage" \
