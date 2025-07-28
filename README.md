@@ -47,6 +47,7 @@ go build -o repclient ./cmd
 
 | Flag                    | Description                                                  | Default       |
 | ----------------------- | ------------------------------------------------------------ | ------------- |
+| `--trial`          | Free Version Query supported all dns except ipv6 with limited results ( upto 1k ) | `false`
 | `--ipv4`, `-i`          | Query A record for given IPv4 address                        |               |
 | `--ipv6`                | Query AAAA record for given IPv6 address (requires `--full`) |               |
 | `--ns`, `-s`            | Query NS record                                              |               |
@@ -54,8 +55,8 @@ go build -o repclient ./cmd
 | `--txt`, `-t`           | Query TXT record                                             |               |
 | `--mx`, `-m`            | Query MX record                                              |               |
 | `--list-file`, `-l`     | Input file with multiple entries                             |               |
-| `--full`, `-f`          | Use full mode (for A/AAAA record streaming)                  | `false`       |
-| `--max-total-output-ip` | Maximum records to fetch per IP                              | `100`         |
+| `--full`, `-f`          | Use full mode (for A/AAAA record streaming) use this if you want to use this your output format must be `ndjson`                 | `false`       |
+| `--max-total-output-ip`, `-m` | Maximum records to fetch per IP                              | `100`         |
 | `--page-size`, `-p`     | Page size for pagination                                     | `100`         |
 | `--output`, `-o`        | Write results to output file                                 | `false`       |
 | `--threads`, `-t`       | Number of threads to use when reading list files             | `1`           |
@@ -73,16 +74,22 @@ go build -o repclient ./cmd
 ./repclient -i 8.8.8.8 -o
 ```
 
-### Query in Full Mode (A or AAAA)
+### Query using custom name file config
+
+```bash
+./repclient --ipv6 2606:4700:4700::1111 -c myconfig.toml
+```
+
+### Query in Full Mode (A or AAAA) with output enabled
 
 ```bash
 ./repclient --ipv6 2606:4700:4700::1111 --full -o
 ```
 
-### Query Using a List File
+### Query Using a List File with output enabled and 5 threads
 
 ```bash
-./repclient -l targets.txt -f -o --threads 5
+./repclient -l targets.txt -o --threads 5
 ```
 
 ---

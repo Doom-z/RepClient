@@ -3,7 +3,7 @@ name: Notify Telegram
 on:
   push:
     branches:
-      - main  # or your default branch
+      - main  
   release:
     types: [published]
 
