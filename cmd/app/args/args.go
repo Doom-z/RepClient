@@ -1,4 +1,4 @@
-package app
+package args
 
 type Args struct {
 	Trial    bool   `arg:"--trial" help:"trial mode" default:"false"`

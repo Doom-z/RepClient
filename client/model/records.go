@@ -18,6 +18,10 @@ type ARecord struct {
 	Timestamp int64  `db:"timestamp" json:"timestamp" cql:"timestamp"`
 }
 
+func (r ARecord) GetDomainID() string {
+	return r.DomainID
+}
+
 type AAAARecord struct {
 	DomainID  string `db:"domain_id" json:"domain_id" cql:"domain_id"`
 	IP        string `db:"ip" json:"ip" cql:"ip"`
@@ -27,4 +31,8 @@ type AAAARecord struct {
 	City      string `db:"city" json:"city" cql:"city"`
 	LatLong   string `db:"latlong" json:"latlong" cql:"latlong"`
 	Timestamp int64  `db:"timestamp" json:"timestamp" cql:"timestamp"`
+}
+
+func (r AAAARecord) GetDomainID() string {
+	return r.DomainID
 }
