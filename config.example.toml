@@ -3,8 +3,8 @@ name = "RepClient"
 description = "Official cli client of repproject"
 
 [api]
-host = "http://localhost:8081"
-api_key = ""
+host = "https://repproject.world"
+api_key = "@repproject"
 
 [output]
 # supported appended-style formats: "txt", "ndjson"

@@ -46,13 +46,17 @@ func (r *Run) Start() {
 	args := r.Args
 
 	switch {
+	case args.Trial && args.ListFile == "":
+		r.handleSingleQueryFree()
+	case args.Trial && args.ListFile != "":
+		r.processListFileFree()
+
 	case args.Ipv6 != "" && args.ModeFull:
 		r.fetchAAAARecords(args.Ipv6)
-
 	case args.Ipv4 != "" && args.ModeFull:
 		r.fetchARecords(args.Ipv4)
 
-	case args.ListFile != "":
+	case args.ListFile != "" && !args.Trial:
 		r.processListFile()
 
 	default:
@@ -85,7 +89,6 @@ func processTypedRecords[T any](c *client.Client, recordType string, ip string, 
 			break
 		}
 	}
-
 	logger.Infof("Total %s records for %s: %d", strings.ToUpper(recordType), ip, count)
 }
 
@@ -136,7 +139,7 @@ func (r *Run) fetchARecords(ipv4 string) {
 
 func (r *Run) processListFile() {
 	stream := StreamFile(r.Args.ListFile)
-	jobs := make(chan string)
+	jobs := make(chan string, r.Args.Threads*2)
 
 	var wg sync.WaitGroup
 	for i := 0; i < r.Args.Threads; i++ {
@@ -145,7 +148,6 @@ func (r *Run) processListFile() {
 			defer wg.Done()
 
 			logger.WithGID().Tracef("Worker %d started", workerID)
-
 			var innerWg sync.WaitGroup
 
 			for line := range jobs {
@@ -157,7 +159,9 @@ func (r *Run) processListFile() {
 
 				go func(target string) {
 					defer innerWg.Done()
-					r.processGenericStream(target)
+					r.processGenericStream(target, func(param string, target string) {
+						r.processStream(param, target)
+					})
 				}(line)
 			}
 
@@ -176,14 +180,57 @@ func (r *Run) processListFile() {
 	wg.Wait()
 }
 
-func (r *Run) processGenericStream(input string) {
+func (r *Run) processListFileFree() {
+	stream := StreamFile(r.Args.ListFile)
+	jobs := make(chan string, r.Args.Threads*2)
+
+	var wg sync.WaitGroup
+	for i := 0; i < r.Args.Threads; i++ {
+		wg.Add(1)
+		go func(workerID int) {
+			defer wg.Done()
+
+			logger.WithGID().Tracef("Worker %d started", workerID)
+			var innerWg sync.WaitGroup
+
+			for line := range jobs {
+				line = strings.TrimSpace(line)
+				if line == "" {
+					continue
+				}
+				innerWg.Add(1)
+
+				go func(target string) {
+					defer innerWg.Done()
+					r.processGenericStream(target, func(param string, target string) {
+						r.processFetch(param, target)
+					})
+				}(line)
+			}
+
+			innerWg.Wait()
+		}(i)
+	}
+
+	// Feed jobs
+	for line := range stream {
+		if trimmed := strings.TrimSpace(line); trimmed != "" {
+			jobs <- trimmed
+		}
+	}
+
+	close(jobs)
+	wg.Wait()
+}
+
+func (r *Run) processGenericStream(input string, handler func(param string, target string)) {
 	param := utils.DetectRecordType(input)
 	if param == "" {
 		logger.Warnf("Could not detect record type for: %s", input)
 		return
 	}
-
-	r.processStream(param, input)
+	handler(param, input)
+	// r.processStream(param, input)
 }
 
 func (r *Run) processStream(param, target string) {
@@ -242,6 +289,55 @@ func (r *Run) processStream(param, target string) {
 		"type":  target,
 		"total": count,
 	}).Infof("Successfully fetched all records")
+}
+
+func (r *Run) processFetch(param, target string) {
+	logger.Tracef("Fetching (%s) records for %s with max records: %d", param, target, r.Args.MaxTotalOutputIp)
+
+	records, err := r.Client.FetchRecords(param, target)
+	if err != nil {
+		logger.Warnf("Client fetch error: %v", err)
+	}
+	outputPath := fmt.Sprintf("%s/stream.%s", r.Cfg.Output.Dir, r.Cfg.Output.Format)
+
+	if (len(records) > 0) && r.Args.Output {
+		for _, record := range records {
+			if r.Cfg.Output.Format == "txt" {
+				fileutil.SaveData(record.DomainID, outputPath, "append")
+			} else {
+				fileutil.SaveData(record, outputPath, "append")
+			}
+		}
+	}
+
+	logger.WithFields(map[string]any{
+		"param": param,
+		"type":  target,
+		"total": len(records),
+	}).Infof("Successfully fetched all records")
+}
+
+func (r *Run) handleSingleQueryFree() {
+	args := r.Args
+	if args.Ipv6 != "" {
+		logger.Fatal("This features only work in paid plans")
+		return
+	}
+	argMap := map[string]string{
+		"ip":    args.Ipv4,
+		"ns":    args.Ns,
+		"cname": args.Cname,
+		"txt":   args.Txt,
+		"mx":    args.Mx,
+	}
+
+	for k, v := range argMap {
+		if v != "" {
+			r.processFetch(k, v)
+			return
+		}
+	}
+	logger.Fatal("You must provide at least one of the following: --ip, --ns, --cname, --txt, --mx")
 }
 
 func (r *Run) handleSingleQuery() {

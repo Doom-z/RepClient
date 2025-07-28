@@ -139,6 +139,37 @@ func (c *Client) FetchRecordsStream(param, value string) (<-chan model.Record, <
 	return recordsCh, errCh
 }
 
+// FetchRecords limited fetches DNS records that match a specific query parameter and value.
+func (c *Client) FetchRecords(param, value string) ([]model.Record, error) {
+	query := url.Values{}
+	query.Set(param, value)
+	reqURL := c.apiURL.ResolveReference(&url.URL{
+		Path:     "/api/dns",
+		RawQuery: query.Encode(),
+	})
+	req, err := http.NewRequest("GET", reqURL.String(), nil)
+	if err != nil {
+		return nil, fmt.Errorf("request creation error: %w", err)
+	}
+	req.Header.Set("Authorization", "Bearer "+c.apiKey)
+	resp, err := c.client.Do(req)
+	if err != nil {
+		return nil, fmt.Errorf("request error: %w", err)
+	}
+	defer resp.Body.Close()
+
+	if resp.StatusCode != http.StatusOK {
+		body, _ := io.ReadAll(resp.Body)
+		return nil, fmt.Errorf("unexpected status %d: %s", resp.StatusCode, body)
+	}
+
+	var result []model.Record
+	if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
+		return nil, fmt.Errorf("decode error: %w", err)
+	}
+	return result, nil
+}
+
 // FetchDNSRecords retrieves DNS records of a given type (e.g., "a", "aaaa") for the specified IP address.
 // It uses a paginated API client to fetch the records and returns a channel of type T and an error channel.
 //

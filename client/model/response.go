@@ -6,6 +6,7 @@ type PaginationMetadata struct {
 	HasMore       bool   `json:"has_more"`
 }
 
+
 type RecordsResponse struct {
 	Data       []Record           `json:"data"`
 	Pagination PaginationMetadata `json:"pagination"`
