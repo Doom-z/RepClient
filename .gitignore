@@ -1,5 +1,6 @@
 config.toml
-./log/
+*.log
+*.log*
 *.txt
 output/
 release/
