@@ -30,6 +30,7 @@ Download the latest precompiled binary from the [Releases page](https://github.c
 git clone https://github.com/Doom-z/RepClient.git
 cd RepClient
 cp config.example.toml config.toml
+go mod tidy
 go build -o repclient ./cmd
 ```
 
