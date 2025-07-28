@@ -19,11 +19,27 @@
 
 ## Installation
 
+### 📁 From Release
+
+Download the latest precompiled binary from the [Releases page](https://github.com/Doom-z/RepClient/releases).
+
+
+### 🔧 From Source
+
 ```bash
 git clone https://github.com/Doom-z/RepClient.git
 cd RepClient
+cp config.example.toml config.toml
 go build -o repclient ./cmd
 ```
+
+
+
+> Choose the appropriate binary for your OS and architecture, then give it executable permissions if needed:
+>
+> ```bash
+> chmod +x repclient
+> ```
 
 
 ### Options
