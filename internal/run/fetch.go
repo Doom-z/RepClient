@@ -18,12 +18,20 @@ func (r *Run) fetchAndSaveRecords(param, target string) {
 	}
 	outputPath := fmt.Sprintf("%s/stream.%s", r.Cfg.Output.Dir, r.Cfg.Output.Format)
 
-	if (len(records) > 0) && r.Args.Output {
+	if len(records) > 0 {
 		for _, record := range records {
-			if r.Cfg.Output.Format == "txt" {
-				fileutil.SaveData(record.DomainID, outputPath, "append")
+			if r.Args.Output {
+				if r.Cfg.Output.Format == "txt" {
+					fileutil.SaveData(record.DomainID, outputPath, "append")
+				} else {
+					fileutil.SaveData(record, outputPath, "append")
+				}
 			} else {
-				fileutil.SaveData(record, outputPath, "append")
+				logger.WithFields(map[string]any{
+					"domain": record.DomainID,
+					"type":   record.RecordType,
+					"ip":     record.IP,
+				}).Infof("Found record")
 			}
 		}
 	}

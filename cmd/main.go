@@ -15,6 +15,11 @@ func main() {
 	args = LoadArgsValid()
 	conf = cfg.LoadConfValid(args.Config, defaultConf, "config.toml")
 	log.InitLogger(conf.Log, args.Verbose)
+
+	if conf.Api.Apikey == "@repproject" {
+		args.Trial = true
+	}
+
 	app.Handle(args, conf)
 }
 

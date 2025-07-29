@@ -47,7 +47,7 @@ go build -o repclient ./cmd
 
 | Flag                    | Description                                                  | Default       |
 | ----------------------- | ------------------------------------------------------------ | ------------- |
-| `--trial`          | Free Version Query supported all dns except ipv6 with limited results ( upto 1k ) | `false`
+| `--trial`          | Free Version Query supported all dns except ipv6 with limited results ( upto 1k ) | `false` if apikey is `@repproject` forced set to `true`
 | `--ipv4`, `-i`          | Query A record for given IPv4 address                        |               |
 | `--ipv6`                | Query AAAA record for given IPv6 address (requires `--full`) |               |
 | `--ns`, `-s`            | Query NS record                                              |               |
