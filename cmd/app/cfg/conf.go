@@ -60,6 +60,9 @@ type Log struct {
 
 func GetDefaultConf() Conf {
 	return Conf{
+		App: App{
+			Name: Name,
+		},
 		Api: Api{
 			Host:   "https://repproject.world",
 			Apikey: "@repproject",

@@ -1,6 +1,7 @@
 package cfg
 
 import (
+	"log"
 	"os"
 	"path/filepath"
 
@@ -25,9 +26,25 @@ func LoadConfValid(configFileName string, defaultConf Conf, defaultConfPath stri
 	}
 	path := findSuitablePath(configFileName)
 
+	if path == "" {
+		f, createErr := os.Create(defaultConfPath)
+		if createErr != nil {
+			log.Fatalf("failed to create config file: %v", createErr)
+		}
+		defer f.Close()
+
+		encErr := toml.NewEncoder(f).Encode(defaultConf)
+		if encErr != nil {
+			log.Fatalf("failed to write default config to file: %v", encErr)
+		}
+		log.Printf("using default config. written to: %s", defaultConfPath)
+
+		path = defaultConfPath
+	}
+
 	_, err := toml.DecodeFile(path, &defaultConf)
 	if err != nil {
-		logger.Info("failed to load config file: ", err, " using default config")
+		log.Fatalf("failed to load config from %s: %v", path, err)
 	}
 
 	return defaultConf
