@@ -2,6 +2,16 @@
 
 **RepClient** is a fast, flexible simple CLI tool for querying and streaming DNS records (A, AAAA, NS, MX, TXT, CNAME) from rep API with support for config files, multithreading, and output to multiple formats.
 
+---
+
+**Client Commit/Release Notifications**  
+[![Telegram - Commit/Release Notifications](https://img.shields.io/badge/Telegram-@repclientlog-blue?logo=telegram)](https://t.me/repclientlog)
+
+**API Info/Updates**  
+[![Telegram - API Updates](https://img.shields.io/badge/Telegram-@RepProject-blue?logo=telegram)](https://t.me/RepProject)
+
+---
+
 ## Demo
 
 [![asciicast](https://asciinema.org/a/MaSyT7OJCYKsFgeS5osoeG533.svg)](https://asciinema.org/a/MaSyT7OJCYKsFgeS5osoeG533)

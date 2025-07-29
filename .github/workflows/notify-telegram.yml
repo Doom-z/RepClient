@@ -25,6 +25,9 @@ jobs:
           elif [[ "${{ github.event_name }}" == "release" ]]; then
             TEXT="🎉 New *release* published: *${{ github.event.release.name }}*
             
+            *Description:*
+            ${{ github.event.release.body }}
+
             [View Release](${{ github.event.release.html_url }})"
           fi
 
