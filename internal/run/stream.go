@@ -116,7 +116,7 @@ func (r *Run) processStreamRecords(param, target string) {
 
 		case err, ok := <-errCh:
 			if ok && err != nil {
-				logger.Printf("Client fetch error: %v", err)
+				logger.Warnf("Client fetch error: %v", err)
 			}
 			errCh = nil
 		}

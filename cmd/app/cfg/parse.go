@@ -1,7 +1,6 @@
 package cfg
 
 import (
-	"fmt"
 	"os"
 	"path/filepath"
 
@@ -30,7 +29,6 @@ func LoadConfValid(configFileName string, defaultConf Conf, defaultConfPath stri
 	if err != nil {
 		logger.Info("failed to load config file: ", err, " using default config")
 	}
-	fmt.Println(path)
 	logger.WithField("conf", &defaultConf).Debug("configuration loaded")
 	return defaultConf
 }
@@ -45,5 +43,6 @@ func findSuitablePath(configFileName string) string {
 			break
 		}
 	}
+	
 	return path
 }

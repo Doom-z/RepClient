@@ -60,9 +60,17 @@ type Log struct {
 
 func GetDefaultConf() Conf {
 	return Conf{
+		Api: Api{
+			Host:   "https://repproject.world",
+			Apikey: "@repproject",
+		},
+		Output: Output{
+			Format: "ndjson",
+			Dir:    "output",
+		},
 		Log: Log{
-			Level:  "warn",
-			Stdout: []Stdout{{Format: LogFormatJSON, Output: LogOutputStdout}},
+			Level:  "info",
+			Stdout: []Stdout{{Format: LogFormatText, Output: LogOutputStdout}},
 		},
 	}
 }
