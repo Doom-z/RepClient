@@ -60,7 +60,7 @@ func (r *Run) processStreamRecords(param, target string) {
 	max := r.Args.MaxTotalOutputIp
 	outputPath := fmt.Sprintf("%s/stream.%s", r.Cfg.Output.Dir, r.Cfg.Output.Format)
 
-	saveCh := make(chan SaveTask, 100)
+	saveCh := make(chan SaveTask, r.Args.PageSize)
 	var wg sync.WaitGroup
 	wg.Add(1)
 	go func() {
